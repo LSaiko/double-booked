@@ -98,6 +98,8 @@ independent, run faster, and clean up after themselves on a shared demo site.
 4. Any booking a test creates must be deleted by the same test or its fixture — the site is shared.
 5. Found a site quirk? Add it to the section below with the workaround.
 
+This project follows the [Contributor Covenant](CODE_OF_CONDUCT.md).
+
 ## Notes on the target site
 
 - `PUT /booking/{id}` returns 409 if the dates are unchanged (it conflicts with itself), so the
