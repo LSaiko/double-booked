@@ -35,6 +35,24 @@ HEADLESS=0 pytest -m ui     # watch the browser
 
 Chrome must be installed; Selenium Manager fetches the driver automatically.
 
+## Reports and screenshots
+
+Every run writes a self-contained HTML report to `reports/report.html` (configured in `pytest.ini`).
+When a UI or integration test fails, the `driver` fixture saves the browser state to
+`screenshots/<test_name>.png` before quitting. Both folders are gitignored.
+
+## CI
+
+[`tests.yml`](.github/workflows/tests.yml) runs on every push and pull request, plus a daily cron
+(the target is a public demo that resets itself, so a nightly run catches upstream changes):
+
+1. **api** — `pytest -m api`, ~15s, no browser.
+2. **ui** — `pytest -m "ui or integration"` on `ubuntu-latest` (Chrome preinstalled). Runs only if
+   `api` passes; no point launching browsers against a dead backend.
+
+Each job uploads its report as an artifact (`api-report`, `ui-report`); the UI one also includes
+any failure screenshots. Find them on the run's summary page under *Artifacts*.
+
 ## Architecture
 
 Three layers, each with a single job:
