@@ -5,6 +5,9 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+### Added
+- Nightly CI failure opens a `bug` issue linking to the run.
+
 ## [0.2.2] - 2026-09-17
 
 ### Fixed
