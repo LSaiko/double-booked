@@ -28,7 +28,7 @@ def test_booking_form_to_confirmation(driver, api_client, roomid, nights, title)
     assert page.confirmation_title() == "Booking Confirmed"
     assert page.confirmed_dates() == f"{checkin} - {checkout}"
     # cleanup: find it through the API so the next run has a clean room
-    for b in api_client.get_bookings(roomid).json()["bookings"]:
+    for b in api_client.list_bookings(roomid):
         if b["bookingdates"]["checkin"] == checkin and b["lastname"] == "Tester":
             api_client.delete_booking(b["bookingid"])
 
