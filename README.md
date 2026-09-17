@@ -1,4 +1,4 @@
-﻿# double-booked
+# double-booked
 
 [![Tests](https://github.com/LSaiko/double-booked/actions/workflows/tests.yml/badge.svg)](https://github.com/LSaiko/double-booked/actions/workflows/tests.yml)
 
