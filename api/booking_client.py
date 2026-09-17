@@ -42,6 +42,12 @@ class BookingClient:
     def get_bookings(self, roomid):
         return self.session.get(f"{self.base_url}/booking", params={"roomid": roomid})
 
+    def list_bookings(self, roomid):
+        """Bookings for a room as a list. The demo site has returned both
+        {"bookings": [...]} and a bare [...] for this endpoint, so normalise."""
+        body = self.get_bookings(roomid).json()
+        return body["bookings"] if isinstance(body, dict) else body
+
     def update_booking(self, booking_id, data):
         # NB: site returns 409 if the dates are unchanged (it conflicts with itself)
         return self.session.put(f"{self.base_url}/booking/{booking_id}", json=data)

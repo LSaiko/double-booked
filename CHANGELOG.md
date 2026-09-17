@@ -5,6 +5,9 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+### Fixed
+- `BookingClient.list_bookings()` tolerates both response shapes the demo site returns for `GET /booking`.
+
 ## [0.1.0] - 2026-09-17
 
 ### Added
