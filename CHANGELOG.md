@@ -6,6 +6,7 @@ All notable changes to this project are documented here. Format follows
 ## [Unreleased]
 
 ### Fixed
+- CI no longer runs twice per PR: `push` trigger limited to `main`.
 - `BookingClient.list_bookings()` tolerates both response shapes the demo site returns for `GET /booking`.
 
 ## [0.1.0] - 2026-09-17
