@@ -5,7 +5,10 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+## [0.2.2] - 2026-09-17
+
 ### Fixed
+- README tree diagram and dashes were mojibake after the repo rename.
 - `BasePage.open()` retries once when Chrome shows its transient "This page couldn't load" error page, which was making random UI tests time out.
 
 ## [0.2.1] - 2026-09-17
@@ -37,7 +40,8 @@ All notable changes to this project are documented here. Format follows
 - Dependabot for pip and GitHub Actions; pinned requirements.
 - MIT license, code of conduct, issue and PR templates.
 
-[Unreleased]: https://github.com/LSaiko/double-booked/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/LSaiko/double-booked/compare/v0.2.2...HEAD
+[0.2.2]: https://github.com/LSaiko/double-booked/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/LSaiko/double-booked/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/LSaiko/double-booked/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/LSaiko/double-booked/releases/tag/v0.1.0
