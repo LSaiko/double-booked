@@ -5,6 +5,12 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-09-17
+
+### Changed
+- Bumped `pytest` 9.0.3 → 9.1.1 and `requests` 2.33.1 → 2.34.2.
+- Bumped `actions/checkout`, `actions/setup-python` and `actions/upload-artifact` to v7.
+
 ## [0.2.0] - 2026-09-17
 
 ### Added
@@ -28,6 +34,7 @@ All notable changes to this project are documented here. Format follows
 - Dependabot for pip and GitHub Actions; pinned requirements.
 - MIT license, code of conduct, issue and PR templates.
 
-[Unreleased]: https://github.com/LSaiko/double-booked/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/LSaiko/double-booked/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/LSaiko/double-booked/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/LSaiko/double-booked/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/LSaiko/double-booked/releases/tag/v0.1.0
