@@ -1,5 +1,6 @@
 import random
 from datetime import date, timedelta
+from pathlib import Path
 
 import pytest
 from selenium import webdriver
@@ -8,8 +9,15 @@ from api.booking_client import BookingClient
 from config import HEADLESS
 
 
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    # expose the test outcome to fixtures so `driver` can screenshot on failure
+    outcome = yield
+    item.rep_call = outcome.get_result() if call.when == "call" else getattr(item, "rep_call", None)
+
+
 @pytest.fixture
-def driver():
+def driver(request):
     opts = webdriver.ChromeOptions()
     if HEADLESS:
         opts.add_argument("--headless=new")
@@ -17,6 +25,9 @@ def driver():
     d = webdriver.Chrome(options=opts)
     d.implicitly_wait(5)
     yield d
+    if getattr(request.node, "rep_call", None) and request.node.rep_call.failed:
+        Path("screenshots").mkdir(exist_ok=True)
+        d.save_screenshot(f"screenshots/{request.node.name}.png")
     d.quit()
 
 
