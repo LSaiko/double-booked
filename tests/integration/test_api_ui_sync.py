@@ -39,7 +39,7 @@ def test_ui_created_booking_is_readable_via_api(driver, api_client):
     checkin, checkout = future_dates(2)
     page = BookingPage(driver).open_room(2, checkin, checkout).book("Browser", "Made")
     assert page.confirmation_title() == "Booking Confirmed"  # wait for the POST to land
-    matches = [b for b in api_client.get_bookings(2).json()["bookings"]
+    matches = [b for b in api_client.list_bookings(2)
                if b["bookingdates"] == {"checkin": checkin, "checkout": checkout}]
     assert len(matches) == 1, matches
     assert matches[0]["firstname"] == "Browser" and matches[0]["lastname"] == "Made"
