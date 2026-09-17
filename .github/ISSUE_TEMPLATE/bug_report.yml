@@ -1,0 +1,37 @@
+name: Bug report
+description: A test fails, flakes, or the framework misbehaves
+labels: [bug]
+body:
+  - type: input
+    id: test
+    attributes:
+      label: Failing test
+      placeholder: tests/ui/test_booking_ui.py::test_booking_form_to_confirmation[1-2-Single Room]
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where does it fail?
+      options: [Locally, CI, Both]
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: pytest output
+      description: Paste the failure block. Attach the HTML report or screenshot if you have one.
+      render: shell
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      placeholder: Python 3.12, Chrome 153, Windows 11
+  - type: checkboxes
+    id: site
+    attributes:
+      label: Checks
+      options:
+        - label: I confirmed https://automationintesting.online is up and the failure isn't a site outage
