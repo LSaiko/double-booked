@@ -89,6 +89,15 @@ API and UI tests fail for different reasons, so each catches bugs the other cann
 Using the API for setup/teardown inside UI tests is the practical payoff of the hybrid: tests stay
 independent, run faster, and clean up after themselves on a shared demo site.
 
+## Contributing
+
+1. Fork, branch from `main`, and run `pytest` before opening a PR — CI runs the same command.
+2. Keep the layers honest: locators and browser actions live in `pages/`, HTTP calls in
+   `api/booking_client.py`, assertions only in `tests/`.
+3. New tests get the matching marker (`api`, `ui`, `integration`) so they land in the right CI job.
+4. Any booking a test creates must be deleted by the same test or its fixture — the site is shared.
+5. Found a site quirk? Add it to the section below with the workaround.
+
 ## Notes on the target site
 
 - `PUT /booking/{id}` returns 409 if the dates are unchanged (it conflicts with itself), so the
