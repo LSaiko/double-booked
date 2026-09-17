@@ -5,6 +5,11 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-09-17
+
+### Added
+- CODEOWNERS, so PRs auto-request review from the maintainer.
+
 ### Fixed
 - CI no longer runs twice per PR: `push` trigger limited to `main`.
 - `BookingClient.list_bookings()` tolerates both response shapes the demo site returns for `GET /booking`.
@@ -23,5 +28,6 @@ All notable changes to this project are documented here. Format follows
 - Dependabot for pip and GitHub Actions; pinned requirements.
 - MIT license, code of conduct, issue and PR templates.
 
-[Unreleased]: https://github.com/LSaiko/double-booked/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/LSaiko/double-booked/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/LSaiko/double-booked/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/LSaiko/double-booked/releases/tag/v0.1.0
