@@ -5,6 +5,9 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+### Fixed
+- `BasePage.open()` retries once when Chrome shows its transient "This page couldn't load" error page, which was making random UI tests time out.
+
 ## [0.2.1] - 2026-09-17
 
 ### Changed

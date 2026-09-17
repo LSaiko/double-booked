@@ -1,3 +1,4 @@
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -12,7 +13,13 @@ class BasePage:
         self.wait = WebDriverWait(driver, 10)
 
     def open(self, path=None):
-        self.driver.get(BASE_URL + (path if path is not None else self.path))
+        url = BASE_URL + (path if path is not None else self.path)
+        # ponytail: one retry for Chrome's transient "This page couldn't load"
+        # error page; bump to a loop with backoff if it keeps showing up in CI
+        for _ in range(2):
+            self.driver.get(url)
+            if "page couldn" not in self.driver.find_element(By.TAG_NAME, "body").text:
+                break
         return self
 
     def find(self, locator):
