@@ -7,19 +7,19 @@ Hybrid API + UI test automation for [automationintesting.online](https://automat
 
 ```
 double-booked/
-â”œâ”€â”€ api/booking_client.py        # requests wrapper: create/get/update/delete bookings
-â”œâ”€â”€ pages/
-â”‚   â”œâ”€â”€ base_page.py             # open / find / click / type helpers
-â”‚   â”œâ”€â”€ home_page.py             # room list, "Book now"
-â”‚   â”œâ”€â”€ booking_page.py          # reservation form â†’ confirmation
-â”‚   â””â”€â”€ admin_page.py            # admin login + Report calendar
-â”œâ”€â”€ tests/
-â”‚   â”œâ”€â”€ api/test_booking_api.py          # pure API: CRUD, invalid payloads
-â”‚   â”œâ”€â”€ ui/test_booking_ui.py            # pure Selenium: home â†’ form â†’ confirmation
-â”‚   â””â”€â”€ integration/test_api_ui_sync.py  # API writes â†” UI reads, and vice versa
-â”œâ”€â”€ conftest.py                  # `driver` (function) + `api_client` (session) fixtures
-â”œâ”€â”€ config.py                    # BASE_URL, admin creds, HEADLESS (env-overridable)
-â””â”€â”€ requirements.txt
+├── api/booking_client.py        # requests wrapper: create/get/update/delete bookings
+├── pages/
+│   ├── base_page.py             # open / find / click / type helpers
+│   ├── home_page.py             # room list, "Book now"
+│   ├── booking_page.py          # reservation form → confirmation
+│   └── admin_page.py            # admin login + Report calendar
+├── tests/
+│   ├── api/test_booking_api.py          # pure API: CRUD, invalid payloads
+│   ├── ui/test_booking_ui.py            # pure Selenium: home → form → confirmation
+│   └── integration/test_api_ui_sync.py  # API writes ↔ UI reads, and vice versa
+├── conftest.py                  # `driver` (function) + `api_client` (session) fixtures
+├── config.py                    # BASE_URL, admin creds, HEADLESS (env-overridable)
+└── requirements.txt
 ```
 
 ## Run
@@ -61,7 +61,7 @@ Three layers, each with a single job:
 |---|---|---|
 | `api/BookingClient` | REST API over HTTP (`requests.Session`, logs in once, carries the auth cookie) | API tests, integration tests, **and UI tests for setup/teardown** |
 | `pages/*` | The browser via Selenium (Page Object Model: locators + actions, no assertions) | UI tests, integration tests |
-| `tests/*` | Both of the above | â€” |
+| `tests/*` | Both of the above | — |
 
 `conftest.py` exposes both entry points as fixtures: `driver` is function-scoped (fresh browser per test,
 no state bleed), `api_client` is session-scoped (one login, reused everywhere, cheap). The `booking`
@@ -74,7 +74,7 @@ API and UI tests fail for different reasons, so each catches bugs the other cann
 
 - **API tests** hit the contract directly: status codes, validation rules (`Firstname should not be
   blank`, phone length), 404 on unknown ids, 202 on delete. They are fast and deterministic, so they
-  can run on every commit and pin down *server-side* regressions precisely â€” a broken validator, a
+  can run on every commit and pin down *server-side* regressions precisely — a broken validator, a
   wrong status code, a field dropped from the response. A UI test would only see "something went
   wrong" and be slow about it.
 - **UI tests** catch what the API can't: the form posts the wrong field, the date picker sends
@@ -83,7 +83,7 @@ API and UI tests fail for different reasons, so each catches bugs the other cann
 - **Integration tests** check that the two layers agree. A booking created through the API must show
   up in the admin Report calendar with the right name and room; a booking made in the browser must be
   readable through the API with the exact dates chosen; a deletion through the API must remove it from
-  the UI. These catch *serialisation and mapping* bugs between front and back end â€” the class of defect
+  the UI. These catch *serialisation and mapping* bugs between front and back end — the class of defect
   where both halves pass their own tests and the product is still broken.
 
 Using the API for setup/teardown inside UI tests is the practical payoff of the hybrid: tests stay
