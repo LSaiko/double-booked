@@ -1,5 +1,7 @@
 ﻿# double-booked
 
+[![Tests](https://github.com/LSaiko/double-booked/actions/workflows/tests.yml/badge.svg)](https://github.com/LSaiko/double-booked/actions/workflows/tests.yml)
+
 Hybrid API + UI test automation for [automationintesting.online](https://automationintesting.online)
 (restful-booker-platform), using Python, `requests`, Selenium and pytest.
 
