@@ -1,4 +1,4 @@
-pytest
-requests
-selenium
-pytest-html
+pytest-html==4.2.0
+pytest==9.0.3
+requests==2.33.1
+selenium==4.49.0
