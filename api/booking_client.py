@@ -10,18 +10,22 @@ class BookingClient:
     status codes and bodies directly.
     """
 
-    def __init__(self, base_url=API_URL):
+    def __init__(self, base_url=API_URL, auth=True):
         self.base_url = base_url
         self.session = requests.Session()
-        self.login()
+        if auth:
+            self.login()
 
     def login(self, username=ADMIN_USER, password=ADMIN_PASS):
         r = self.session.post(f"{self.base_url}/auth/login",
                               json={"username": username, "password": password})
         r.raise_for_status()
-        # GET/PUT/DELETE on bookings require the token as a cookie
-        self.session.cookies.set("token", r.json()["token"])
+        self.set_token(r.json()["token"])
         return r
+
+    def set_token(self, token):
+        # GET/PUT/DELETE on bookings require the token as a cookie
+        self.session.cookies.set("token", token)
 
     @staticmethod
     def payload(roomid=1, checkin="2027-05-01", checkout="2027-05-03", firstname="Test",

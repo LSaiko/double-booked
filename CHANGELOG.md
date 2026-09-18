@@ -6,6 +6,10 @@ All notable changes to this project are documented here. Format follows
 ## [Unreleased]
 
 ### Added
+- Security-adjacent API tests: bad credentials, unauthenticated/bogus-token access to protected endpoints, and client-supplied `bookingid` being ignored.
+- `BookingClient(auth=False)` and `set_token()` for unauthenticated calls.
+
+### Added
 - Nightly CI failure opens a `bug` issue linking to the run.
 
 ## [0.2.2] - 2026-09-17
