@@ -15,6 +15,7 @@ double-booked/
 │   └── admin_page.py            # admin login + Report calendar
 ├── tests/
 │   ├── api/test_booking_api.py          # pure API: CRUD, invalid payloads
+│   ├── api/test_booking_security.py     # auth rejection, bogus tokens, mass-assignment
 │   ├── ui/test_booking_ui.py            # pure Selenium: home → form → confirmation
 │   └── integration/test_api_ui_sync.py  # API writes ↔ UI reads, and vice versa
 ├── conftest.py                  # `driver` (function) + `api_client` (session) fixtures
@@ -76,7 +77,8 @@ API and UI tests fail for different reasons, so each catches bugs the other cann
   blank`, phone length), 404 on unknown ids, 202 on delete. They are fast and deterministic, so they
   can run on every commit and pin down *server-side* regressions precisely — a broken validator, a
   wrong status code, a field dropped from the response. A UI test would only see "something went
-  wrong" and be slow about it.
+  wrong" and be slow about it. The API layer is also the only place to check what the server
+  *refuses*: bad credentials, missing or forged tokens, client-supplied ids — the browser never sends those.
 - **UI tests** catch what the API can't: the form posts the wrong field, the date picker sends
   off-by-one dates, the confirmation renders the wrong text, a button is unclickable behind the
   navbar. The backend can be perfect and users still can't book a room.
