@@ -13,6 +13,7 @@ class BookingClient:
     def __init__(self, base_url=API_URL, auth=True):
         self.base_url = base_url
         self.session = requests.Session()
+        self.auth = auth
         if auth:
             self.login()
 
@@ -37,14 +38,23 @@ class BookingClient:
             "bookingdates": {"checkin": checkin, "checkout": checkout},
         }
 
+    def _send(self, method, url, **kw):
+        # the demo site resets mid-run and drops tokens; re-login once on 403.
+        # Unauthenticated clients (auth=False) keep their 403s on purpose.
+        r = self.session.request(method, url, **kw)
+        if r.status_code == 403 and self.auth:
+            self.login()
+            r = self.session.request(method, url, **kw)
+        return r
+
     def create_booking(self, data):
         return self.session.post(f"{self.base_url}/booking", json=data)
 
     def get_booking(self, booking_id):
-        return self.session.get(f"{self.base_url}/booking/{booking_id}")
+        return self._send("GET", f"{self.base_url}/booking/{booking_id}")
 
     def get_bookings(self, roomid):
-        return self.session.get(f"{self.base_url}/booking", params={"roomid": roomid})
+        return self._send("GET", f"{self.base_url}/booking", params={"roomid": roomid})
 
     def list_bookings(self, roomid):
         """Bookings for a room as a list. The demo site has returned both
@@ -54,7 +64,7 @@ class BookingClient:
 
     def update_booking(self, booking_id, data):
         # NB: site returns 409 if the dates are unchanged (it conflicts with itself)
-        return self.session.put(f"{self.base_url}/booking/{booking_id}", json=data)
+        return self._send("PUT", f"{self.base_url}/booking/{booking_id}", json=data)
 
     def delete_booking(self, booking_id):
-        return self.session.delete(f"{self.base_url}/booking/{booking_id}")
+        return self._send("DELETE", f"{self.base_url}/booking/{booking_id}")
