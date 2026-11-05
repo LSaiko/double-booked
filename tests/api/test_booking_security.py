@@ -17,6 +17,7 @@ def test_login_rejects_bad_credentials():
 
 @pytest.mark.parametrize("token", [None, "not-a-real-token"], ids=["no-token", "bogus-token"])
 @pytest.mark.parametrize("verb", ["get", "update", "delete"])
+@pytest.mark.booking_by_id
 def test_protected_endpoints_reject_unauthenticated(booking, verb, token):
     anon = BookingClient(auth=False)
     if token:
@@ -29,11 +30,13 @@ def test_protected_endpoints_reject_unauthenticated(booking, verb, token):
     assert call().status_code == 403
 
 
+@pytest.mark.booking_by_id
 def test_unauthenticated_delete_leaves_booking_intact(api_client, booking):
     BookingClient(auth=False).delete_booking(booking["bookingid"])
     assert api_client.get_booking(booking["bookingid"]).status_code == 200
 
 
+@pytest.mark.booking_by_id
 def test_client_supplied_booking_id_is_ignored(api_client):
     """Mass-assignment: posting bookingid=1 must not overwrite booking 1."""
     before = api_client.get_booking(1).json()

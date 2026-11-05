@@ -46,9 +46,21 @@ jobs:
           path: |
             reports/report.html
             screenshots/
-      - name: Open issue on nightly failure
-        if: failure() && github.event_name == 'schedule'
+
+  # its own job: when `api` fails, `ui` is skipped and never got to report it
+  nightly-failure:
+    runs-on: ubuntu-latest
+    needs: [api, ui]
+    if: failure() && github.event_name == 'schedule'
+    steps:
+      - name: Open or update the nightly failure issue
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh issue create --repo "$GITHUB_REPOSITORY" --label bug             --title "Nightly run failed $(date -u +%F)"             --body "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID (report + screenshots in the artifacts)"
+          run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          open=$(gh issue list --repo "$GITHUB_REPOSITORY" --label bug --state open                    --search "Nightly run failing in:title" --json number -q '.[0].number')
+          if [ -n "$open" ]; then
+            gh issue comment "$open" --repo "$GITHUB_REPOSITORY" --body "Still failing: $run_url"
+          else
+            gh issue create --repo "$GITHUB_REPOSITORY" --label bug               --title "Nightly run failing"               --body "First seen: $run_url (report + screenshots in the artifacts)"
+          fi
