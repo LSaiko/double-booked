@@ -38,6 +38,7 @@ def test_api_created_booking_appears_in_admin_report(driver, booking):
     assert expected in eventually(lambda: report_events_for(driver, checkin), lambda e: expected in e)
 
 
+@pytest.mark.booking_by_id
 def test_api_deleted_booking_disappears_from_admin_report(driver, api_client, booking):
     checkin = booking["bookingdates"]["checkin"]
     expected = f"{booking['firstname']} {booking['lastname']} - Room: {ROOM_NAMES[booking['roomid']]}"
@@ -47,6 +48,7 @@ def test_api_deleted_booking_disappears_from_admin_report(driver, api_client, bo
     assert expected not in eventually(lambda: report_events_for(driver, checkin), lambda e: expected not in e)
 
 
+@pytest.mark.booking_by_id
 def test_ui_created_booking_is_readable_via_api(driver, api_client):
     checkin, checkout = future_dates(2)
     page = BookingPage(driver).open_room(2, checkin, checkout).book("Browser", "Made")

@@ -4,7 +4,8 @@ from conftest import future_dates
 from pages.booking_page import BookingPage
 from pages.home_page import HomePage
 
-pytestmark = pytest.mark.ui
+# every UI test walks the reservation page, which /room/{id} 500s have broken
+pytestmark = [pytest.mark.ui, pytest.mark.room_by_id]
 
 
 def test_home_lists_rooms_and_navigates_to_booking(driver):

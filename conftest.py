@@ -1,12 +1,14 @@
+import functools
 import random
 from datetime import date, timedelta
 from pathlib import Path
 
 import pytest
+import requests
 from selenium import webdriver
 
 from api.booking_client import BookingClient
-from config import HEADLESS
+from config import API_URL, HEADLESS
 
 
 @pytest.hookimpl(hookwrapper=True)
@@ -34,6 +36,27 @@ def driver(request):
 @pytest.fixture(scope="session")
 def api_client():
     return BookingClient()
+
+
+# Upstream outage since 2026-10-14: these endpoints answer 500 to everything,
+# including to anonymous callers who would normally get a 403. /booking/{id}
+# takes out the API CRUD and security tests; /room/{id} leaves the reservation
+# page stuck on its spinner, so every UI locator on it times out.
+# ponytail: one probe per path per session, and marked tests skip themselves
+# while it is down. Both the markers and this go once upstream stays up.
+BROKEN_UPSTREAM = {"booking_by_id": "/booking/1", "room_by_id": "/room/1"}
+
+
+@functools.cache
+def endpoint_up(path):
+    return requests.get(f"{API_URL}{path}").status_code != 500
+
+
+@pytest.fixture(autouse=True)
+def _skip_if_upstream_down(request):
+    for marker, path in BROKEN_UPSTREAM.items():
+        if request.node.get_closest_marker(marker) and not endpoint_up(path):
+            pytest.skip(f"upstream: {path.rsplit('/', 1)[0]}/{{id}} returns 500")
 
 
 def future_dates(nights=2):

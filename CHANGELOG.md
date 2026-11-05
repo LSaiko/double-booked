@@ -8,9 +8,19 @@ All notable changes to this project are documented here. Format follows
 ### Added
 - Security-adjacent API tests: bad credentials, unauthenticated/bogus-token access to protected endpoints, and client-supplied `bookingid` being ignored.
 - `BookingClient(auth=False)` and `set_token()` for unauthenticated calls.
-
-### Added
 - Nightly CI failure opens a `bug` issue linking to the run.
+
+### Fixed
+- The nightly failure issue is opened from its own job. It used to live in the `ui`
+  job, which is skipped when `api` fails, so API-only failures were never reported;
+  repeat failures now comment on the open issue instead of filing a new one each day.
+- Tests skip themselves while the endpoint they need is down upstream. Since
+  2026-10-14 the demo site answers 500 to everything on `/booking/{id}` (API CRUD
+  and security tests) and on `/room/{id}`, which leaves the reservation page stuck
+  on its spinner (every UI test). The nightly run still exercises the rest of the
+  suite, and each skip lifts itself as soon as that endpoint recovers.
+- `BookingClient` re-logs-in once on a 403, and the cross-layer assertions poll
+  instead of reading immediately after a write.
 
 ## [0.2.2] - 2026-09-17
 

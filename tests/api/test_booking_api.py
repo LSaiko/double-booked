@@ -22,6 +22,7 @@ def test_create_booking(api_client, roomid, nights, first, last):
     api_client.delete_booking(body["bookingid"])
 
 
+@pytest.mark.booking_by_id
 def test_get_booking(api_client, booking):
     r = api_client.get_booking(booking["bookingid"])
     assert r.status_code == 200
@@ -29,6 +30,7 @@ def test_get_booking(api_client, booking):
     assert r.json()["bookingdates"] == booking["bookingdates"]
 
 
+@pytest.mark.booking_by_id
 def test_update_booking(api_client, booking):
     checkin, checkout = future_dates()  # dates must change or the API 409s on itself
     updated = {**booking, "lastname": "Updated",
@@ -38,6 +40,7 @@ def test_update_booking(api_client, booking):
     assert api_client.get_booking(booking["bookingid"]).json()["lastname"] == "Updated"
 
 
+@pytest.mark.booking_by_id
 def test_delete_booking(api_client):
     checkin, checkout = future_dates()
     bid = api_client.create_booking(BookingClient.payload(2, checkin, checkout)).json()["bookingid"]
@@ -57,5 +60,6 @@ def test_create_booking_invalid_payload(api_client, bad, expected_error):
     assert expected_error in r.json()["errors"]
 
 
+@pytest.mark.booking_by_id
 def test_get_unknown_booking(api_client):
     assert api_client.get_booking(999999).status_code == 404
