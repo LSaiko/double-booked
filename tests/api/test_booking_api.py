@@ -1,7 +1,7 @@
 import pytest
 
 from api.booking_client import BookingClient
-from conftest import future_dates
+from conftest import create_booking, future_dates
 
 pytestmark = pytest.mark.api
 
@@ -12,8 +12,8 @@ pytestmark = pytest.mark.api
     (3, 5, "Linus", "Torvalds"),  # Suite, five nights
 ])
 def test_create_booking(api_client, roomid, nights, first, last):
-    checkin, checkout = future_dates(nights)
-    r = api_client.create_booking(BookingClient.payload(roomid, checkin, checkout, first, last))
+    r, sent = create_booking(api_client, roomid, nights, first, last)
+    checkin, checkout = sent["bookingdates"]["checkin"], sent["bookingdates"]["checkout"]
     assert r.status_code == 201, r.text
     body = r.json()
     assert body["roomid"] == roomid
@@ -42,8 +42,8 @@ def test_update_booking(api_client, booking):
 
 @pytest.mark.booking_by_id
 def test_delete_booking(api_client):
-    checkin, checkout = future_dates()
-    bid = api_client.create_booking(BookingClient.payload(2, checkin, checkout)).json()["bookingid"]
+    r, _ = create_booking(api_client, roomid=2)
+    bid = r.json()["bookingid"]
     assert api_client.delete_booking(bid).status_code == 202
     assert api_client.get_booking(bid).status_code == 404
 

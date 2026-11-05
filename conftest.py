@@ -38,7 +38,8 @@ def api_client():
     return BookingClient()
 
 
-# Upstream outage since 2026-10-14: these endpoints answer 500 to everything,
+# Upstream outage since 2026-10-14 (issue #22): these endpoints answer 500 to
+# everything,
 # including to anonymous callers who would normally get a 403. /booking/{id}
 # takes out the API CRUD and security tests; /room/{id} leaves the reservation
 # page stuck on its spinner, so every UI locator on it times out.
@@ -56,7 +57,7 @@ def endpoint_up(path):
 def _skip_if_upstream_down(request):
     for marker, path in BROKEN_UPSTREAM.items():
         if request.node.get_closest_marker(marker) and not endpoint_up(path):
-            pytest.skip(f"upstream: {path.rsplit('/', 1)[0]}/{{id}} returns 500")
+            pytest.skip(f"upstream: {path.rsplit('/', 1)[0]}/{{id}} returns 500 (#22)")
 
 
 def future_dates(nights=2):
@@ -69,13 +70,27 @@ def future_dates(nights=2):
     return checkin.isoformat(), (checkin + timedelta(days=nights)).isoformat()
 
 
+def create_booking(api_client, roomid=1, nights=2, firstname="Api", lastname="Made", tries=3):
+    """POST a booking on fresh random dates. Returns (response, payload).
+
+    ponytail: retries on 409 because the demo site answers "Failed to create
+    booking" intermittently, with no actual date overlap behind it (see #22) --
+    it restarts under the suite. Three tries, then the caller's assert fails for
+    real. Drop the retry if the site ever stops flapping.
+    """
+    for _ in range(tries):
+        checkin, checkout = future_dates(nights)
+        data = BookingClient.payload(roomid, checkin, checkout, firstname, lastname)
+        r = api_client.create_booking(data)
+        if r.status_code != 409:
+            break
+    return r, data
+
+
 @pytest.fixture
 def booking(api_client):
     """Create a booking via the API, delete it after the test."""
-    checkin, checkout = future_dates()
-    data = BookingClient.payload(roomid=1, checkin=checkin, checkout=checkout,
-                                 firstname="Api", lastname=f"Made{random.randint(100, 999)}")
-    r = api_client.create_booking(data)
+    r, data = create_booking(api_client, lastname=f"Made{random.randint(100, 999)}")
     assert r.status_code == 201, r.text
     data["bookingid"] = r.json()["bookingid"]
     yield data

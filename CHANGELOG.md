@@ -21,6 +21,9 @@ All notable changes to this project are documented here. Format follows
   suite, and each skip lifts itself as soon as that endpoint recovers.
 - `BookingClient` re-logs-in once on a 403, and the cross-layer assertions poll
   instead of reading immediately after a write.
+- Booking creation retries on a 409. The demo site returns "Failed to create booking"
+  intermittently with no overlapping dates behind it, which was failing the create
+  tests outright in CI.
 
 ## [0.2.2] - 2026-09-17
 
